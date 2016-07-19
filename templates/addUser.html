@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}室内定位后台系统{% endblock %}
+
+{% block page_content %}
+    <br/>
+    <div class ="container" align="center">
+        <div class="panel panel-default" align="left" >
+            <div class="panel-heading"  >
+                <p style="font-size: 12pt; font-family:黑体">新增用户</p>
+            </div>
+            <div class="panel-body">
+                {{ wtf.quick_form(form)}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
