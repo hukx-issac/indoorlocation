@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}室内定位后台系统{% endblock %}
+
+{% block page_content%}
+    <br />
+    <div class ="container" align="center">
+        <form>
+            <div class="input-group" >
+                <span class="input-group-addon" >精确查找</span>
+                <input type="text" id="input" name="input" class="form-control" placeholder="请输入要查找用户的用户名" style="width: 25%" >
+                <div align="left" >
+                    &nbsp;
+                    <button type="button" id="search" name="search" class="btn btn-success" onclick="validateInput()">查找</button>
+                    &nbsp;
+                    <span id="msg"></span>
+                </div>
+            </div>
+        </form>
+        <br />
+
+        <div class="panel panel-default" align="left" >
+            <div class="panel-heading" >
+                <p style="font-size: 12pt; font-family:黑体">用户列表</p>
+            </div>
+
+            <div class="panel-body">
+                <table class="table table-striped" id="table">
+                    <caption id="num"></caption>
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>用户名</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <ul>
+
+                    </ul>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        $.post("/home/selectUser/searchAll",function(data){
+            var users = eval ("(" + data + ")");
+            var table = document.getElementById("table");
+            for (i=0;i<users.information.length;i++)
+                insertTab(table,users.users[i]);
+
+            $("#table button:odd").bind("click",function(){
+                var x=confirm("确认要删除吗？");
+                if(x){
+                    username =  $(this).attr('id').split("_")[0]
+                    $.post("/home/selectUser/remove", {'username': username},function(data){
+                        var data = eval ("(" + data + ")");
+                        if(data.status =="success"){
+                            alert("删除成功!");
+                            location.reload();
+                        }else {
+                            alert("删除失败!");
+                        }
+
+
+                    })
+                }
+            })
+        })
+    });
+
+    function validateInput() {
+        var input = document.getElementById("input");
+        var msg = document.getElementById("msg");
+        var table = document.getElementById("table");
+        var num = document.getElementById("num");
+        if (input.value != "") {
+            msg.innerHTML = "";
+            $.post("/home/selectUser/search", {input: input.value},function(data){
+                var user = eval ("(" + data + ")");
+                if(user.information.length =='0')
+                    msg.innerHTML = "<font color='red'>该用户不存在!</font>";
+                else{
+                    for(var i=1;i<table.rows.length;)
+                        table.deleteRow(1);
+                    insertTab(table,user.users[0]);
+                }
+            });
+        } else {
+            msg.innerHTML = "<font color='red'>输入不能为空!</font>";
+        }
+    }
+
+    function insertTab(table,user){   //向table表中插入对象user
+        var row=table.insertRow(1);
+        var cell1=row.insertCell(0);
+        var cell2=row.insertCell(1);
+        var cell3=row.insertCell(2);
+        cell1.innerHTML = user.realname;
+        cell2.innerHTML = user.username;
+        cell3.innerHTML ='<button type="button" class="btn btn-info"id="'+user.username+'_search">查看信息</button>'+'<button type="button" class="btn btn-danger" id="'+user.username+'_delete">删除用户</button>';
+        table.caption.innerHTML="共"+(table.rows.length-1)+"个用户";
+    }
+
+    </script>
+
+{% endblock %}
