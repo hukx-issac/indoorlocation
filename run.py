@@ -1,4 +1,7 @@
-from indoorlocation import app
+from indoorlocation import app # create_app
+
+# app = create_app('development')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
+

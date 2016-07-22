@@ -1,13 +1,14 @@
 # coding:utf-8
 from flask_wtf import Form
-from wtforms import StringField,PasswordField,SubmitField
-from wtforms.validators import DataRequired,Length
+from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms.validators import DataRequired, Length
 
 
 # 定义登录表单
 class LoginForm(Form):
-    username = StringField(u'账号', validators=[DataRequired(), Length(1,20)])
-    password = PasswordField(u'密码', validators=[DataRequired(), Length(1,20)])
+    username = StringField(u'账号', validators=[DataRequired(), Length(1, 20)])
+    password = PasswordField(u'密码', validators=[DataRequired(), Length(1, 20)])
+    select = SelectField(u'身份', validators=[DataRequired()], choices=[('supermanager', u'超级管理员'),('manager', u'管理员'), ('generaluser', u'普通用户')])
     submit = SubmitField(u'登 录')
 
 
@@ -19,7 +20,7 @@ class ResetPassword(Form):
     submit = SubmitField(u'确 认 修 改')
 
 
-#新增用户表单
+# 新增用户表单
 class AddUser(Form):
     username = StringField(u'登录账号', validators=[DataRequired(), Length(1,20)])
     password = PasswordField(u'登录密码', validators=[DataRequired(), Length(1,20)])
