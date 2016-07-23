@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired, Length
 class LoginForm(Form):
     username = StringField(u'账号', validators=[DataRequired(), Length(1, 20)])
     password = PasswordField(u'密码', validators=[DataRequired(), Length(1, 20)])
-    select = SelectField(u'身份', validators=[DataRequired()], choices=[('supermanager', u'超级管理员'),('manager', u'管理员'), ('generaluser', u'普通用户')])
+    role = SelectField(u'身份', validators=[DataRequired()], choices=[(u'supermanager', u'超级管理员'),('manager', u'管理员'), ('generaluser', u'普通用户')])
     submit = SubmitField(u'登 录')
 
 

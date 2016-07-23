@@ -9,7 +9,7 @@ from models import db
 bootstrap = Bootstrap()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'main.login'
-login_manager.login_message = u"请登录您的账户."
+login_manager.login_message = u"请登录您的账户!"
 
 
 def create_app(config_name='default'):
@@ -21,6 +21,4 @@ def create_app(config_name='default'):
     bootstrap.init_app(app)
     login_manager.init_app(app)
     db.init_app(app)
-
-
     return app

@@ -1,6 +1,6 @@
 # coding:utf-8
 from flask import Blueprint, render_template, flash,redirect, url_for, request,session
-from flask_login import login_required, login_user, LoginManager
+from flask_login import login_required, login_user, LoginManager, logout_user
 from indoorlocation.forms import *
 from indoorlocation.models import *
 
@@ -13,7 +13,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user is not None and user.verify_password(form.password.data):
+        if user is not None and user.verify_password(form.password.data) and (user.role.role == form.role.data):
+
             login_user(user)
             return redirect(request.args.get('next') or url_for('main.home'))
         else:
@@ -29,3 +30,13 @@ def load_user(user_id):
 @login_required
 def home():
     return render_template('home.html')
+
+
+@main.route('/home/logout', endpoint='logout')
+@login_required
+def logout():
+    logout_user()
+    flash(u'您已经退出账户！')
+    return redirect(url_for('main.home'))
+
+

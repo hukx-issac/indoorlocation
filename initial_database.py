@@ -2,6 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask
+from flask_login import UserMixin
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -14,7 +15,7 @@ app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', True)
 
 # models 模型
 # 用户模型
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -45,10 +46,10 @@ class User(db.Model):
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    role = db.Column(db.String(10), unique=True, nullable=False)
+    role = db.Column(db.String(20), unique=True, nullable=False)
     users = db.relationship('User', backref='role')
 
-    def __init__(self, id, role = '普通用户'):
+    def __init__(self, id, role = 'generaluser'):
         self.id = id
         self.role = role
 
@@ -59,9 +60,9 @@ db.create_all()
 
 # 数据库初始化
 # 用户user身份identity
-supermanager = Role(1, '超级管理员')
-manager = Role(2, '管理员')
-generaluser = Role(3, '普通用户')
+supermanager = Role(1, 'supermanager')
+manager = Role(2, 'manager')
+generaluser = Role(3, 'generaluser')
 db.session.add(manager)
 db.session.add(generaluser)
 db.session.add(supermanager)
@@ -69,5 +70,7 @@ db.session.commit()
 
 # 初始化第一个超级管理员
 firstperson= User('qwe', '123',1)
+secondperson= User('asd', '123',2)
 db.session.add(firstperson)
+db.session.add(secondperson)
 db.session.commit()

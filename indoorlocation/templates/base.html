@@ -32,8 +32,12 @@
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/home/selectUser">查询用户</a></li>
-                        <li><a href="/home/addUser">新增用户</a></li>
+                        <li><a href="/home/selectUser">查询普通用户</a></li>
+                        <li><a href="/home/addUser">新增普通用户</a></li>
+                        {% if current_user.is_authenticated and current_user.role.role == "supermanager"%}
+                            <li><a href="/home/selectUser">查询管理员</a></li>
+                            <li><a href="/home/addUser">新增管理员</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="/home/mapManage">地图管理</a></li>
