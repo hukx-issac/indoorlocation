@@ -13,10 +13,13 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    realname = db.Column(db.String(20), nullable=True)
+    path = db.relationship('Path', backref='username',lazy='dynamic')     # 定义反向关系
 
-    def __init__(self, username, password, role_id=3):
+    def __init__(self, username, password, role_id=3, realname = ''):
         self.username = username
         self.password = password
+        self.realname = realname
         self.role_id = role_id
 
     @property
@@ -38,9 +41,17 @@ class User(db.Model, UserMixin):
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    role = db.Column(db.String(10), unique=True, nullable=False)
-    users = db.relationship('User', backref='role')
+    role = db.Column(db.String(20), unique=True, nullable=False)
+    users = db.relationship('User', backref='role',lazy='dynamic')     # 定义反向关系
 
-    def __init__(self, id, role = '普通用户'):
+    def __init__(self, id, role = u'普通用户'):
         self.id = id
         self.role = role
+
+
+# 用户上传的路径模型
+class Path(db.Model):
+    __tablename__ = 'paths'
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    path = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

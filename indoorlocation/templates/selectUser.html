@@ -81,7 +81,7 @@
         var num = document.getElementById("num");
         if (input.value != "") {
             msg.innerHTML = "";
-            $.post("/home/selectUser/search", {input: input.value},function(data){
+            $.post("/home/selectUser/search", {"input": input.value},function(data){
                 var user = eval ("(" + data + ")");
                 if(user.information.length =='0')
                     msg.innerHTML = "<font color='red'>该用户不存在!</font>";
