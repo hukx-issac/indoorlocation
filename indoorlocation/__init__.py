@@ -20,6 +20,7 @@ def create_app(config_name='default'):
     app.register_blueprint(login.main)  # 注册蓝本
     app.register_blueprint(setting.main)
     app.register_blueprint(user_manage.main)
+    app.register_blueprint(map_manage.main)
 
     bootstrap.init_app(app)
     login_manager.init_app(app)

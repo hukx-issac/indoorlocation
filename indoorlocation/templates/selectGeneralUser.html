@@ -48,31 +48,15 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript">
     $(function(){
-        $.post("/home/selectUser/searchAll",function(data){
+        $.post("/home/selectUser/searchAllGeneral",function(data){
             var users = eval ("(" + data + ")");
             var table = document.getElementById("table");
             for (i=0;i<users.information.length;i++)
                 insertTab(table,users.users[i]);
-
-            $("#table button:odd").bind("click",function(){
-                var x=confirm("确认要删除吗？");
-                if(x){
-                    username =  $(this).attr('id').split("_")[0]
-                    $.post("/home/selectUser/remove", {'username': username},function(data){
-                        var data = eval ("(" + data + ")");
-                        if(data.status =="success"){
-                            alert("删除成功!");
-                            location.reload();
-                        }else {
-                            alert("删除失败!");
-                        }
-
-
-                    })
-                }
-            })
+            loadDeleteUser();userInformation();
         })
     });
+
 
     function validateInput() {
         var input = document.getElementById("input");
@@ -86,15 +70,45 @@
                 if(user.information.length =='0')
                     msg.innerHTML = "<font color='red'>该用户不存在!</font>";
                 else{
-                    for(var i=1;i<table.rows.length;)
+                    while(table.rows.length>1)
                         table.deleteRow(1);
                     insertTab(table,user.users[0]);
+                    loadDeleteUser();userInformation();
                 }
             });
         } else {
             msg.innerHTML = "<font color='red'>输入不能为空!</font>";
         }
     }
+
+
+    function loadDeleteUser(){
+        $("#table button:odd").bind("click",function(){
+            var x=confirm("确认要删除吗？");
+            if(x){
+                username =  $(this).attr('id').split("_")[0]
+                $.post("/remove/user", {'username': username},function(data){
+                    var data = eval ("(" + data + ")");
+                    if(data.status =="success"){
+                        alert("删除成功!");
+{#                        location.reload();#}
+                        window.location.href="/home/selectUser/generalUser";
+                    }else {
+                        alert("删除失败!");
+                    }
+                })
+            }
+        })
+    }
+
+
+    function userInformation(){
+        $("#table button:even").bind("click",function(){
+            username =  $(this).attr('id').split("_")[0];
+            window.location.href="/home/selectInfo/generalUser/"+username;
+        })
+    }
+
 
     function insertTab(table,user){   //向table表中插入对象user
         var row=table.insertRow(1);
@@ -104,7 +118,7 @@
         cell1.innerHTML = user.realname;
         cell2.innerHTML = user.username;
         cell3.innerHTML ='<button type="button" class="btn btn-info"id="'+user.username+'_search">查看信息</button>'+'<button type="button" class="btn btn-danger" id="'+user.username+'_delete">删除用户</button>';
-        table.caption.innerHTML="共"+(table.rows.length-1)+"个用户";
+        table.caption.innerHTML="共"+(table.rows.length-1)+"个普通用户";
     }
 
     </script>

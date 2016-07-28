@@ -17,10 +17,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.verify_password(form.password.data) and (user.role.role == form.role.data):
             login_user(user)
-            if current_user.role.role == u"普通用户":
-                return u"普通用户"
-            else:
-                return redirect(request.args.get('next') or url_for('login.home'))
+            return redirect(request.args.get('next') or url_for('login.home'))
         else:
             flash(u'无效的用户名或密码。')
     return render_template('login.html', form=form)

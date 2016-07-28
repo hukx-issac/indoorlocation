@@ -1,6 +1,9 @@
 # coding:utf-8
+import os
+
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    UPLOAD_FOLDER = os.path.abspath('.')+r'\upload_file'    # 上传文件的目录
 
 
 class DevelopmentConfig(Config):

@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     realname = db.Column(db.String(20), nullable=True)
-    path = db.relationship('Path', backref='username',lazy='dynamic')     # 定义反向关系
+    path = db.relationship('Path', backref='user',lazy='dynamic')     # 定义反向关系
 
     def __init__(self, username, password, role_id=3, realname = ''):
         self.username = username
@@ -42,7 +42,7 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, unique=True, primary_key=True)
     role = db.Column(db.String(20), unique=True, nullable=False)
-    users = db.relationship('User', backref='role',lazy='dynamic')     # 定义反向关系
+    users = db.relationship('User', backref='role', lazy='dynamic')     # 定义反向关系
 
     def __init__(self, id, role = u'普通用户'):
         self.id = id
@@ -54,4 +54,5 @@ class Path(db.Model):
     __tablename__ = 'paths'
     id = db.Column(db.Integer, unique=True, primary_key=True)
     path = db.Column(db.Text)
+    caption = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

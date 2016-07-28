@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block page_content %}
+    <br />
     <table class="table">
         <caption>基本信息</caption>
         <tbody>
@@ -18,20 +19,9 @@
         </tr>
         </tbody>
     </table>
-
-    <hr style="height:1px;border:none;border-top:1px solid #555555;" />
-
-    <form action="" method=post enctype=multipart/form-data>
-        <label>请导入路径文件</label>
-        <input type="file" name="file" size="60" id="file">
-        <p class="help-block" id="msg">尚未导入文件</p>
-        <button type="submit" class="btn btn-default">上&nbsp;&nbsp;&nbsp;传</button>
-    </form>
-
-    <hr style="height:1px;border:none;border-top:1px solid #555555;" />
-
+    <br />
     <table class="table table-hover"  id="table">
-        <caption>我的路径</caption>
+        <caption>上传的路径</caption>
         <thead>
         <tr>
             <th>路径ID</th>
@@ -85,12 +75,5 @@
             })
         }
 
-        $("#file").bind("change",function(){
-            var file = document.getElementById("file");
-            var msg = document.getElementById("msg");
-            if(file.value!=""){
-                msg.innerHTML = "<font color='green'>已导入文件</font>";
-            }
-        });
     </script>
 {% endblock %}

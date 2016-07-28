@@ -24,7 +24,7 @@ class ResetPassword(Form):
 class SuperManagerAddUser(Form):
     username = StringField(u'登录账号', validators=[DataRequired(), Length(1,20)])
     password = PasswordField(u'登录密码', validators=[DataRequired(), Length(1,20)])
-    realname = StringField(u'用户姓名', validators=[DataRequired(),Length(1,5)])
+    realname = StringField(u'用户姓名', validators=[DataRequired(),Length(1,20)])
     role = RadioField(u'角色', choices = [('2', u'管理员'), ('3', u'普通用户')])
     submit = SubmitField(u'提 交')
 
@@ -33,6 +33,6 @@ class SuperManagerAddUser(Form):
 class ManagerAddUser(Form):
     username = StringField(u'登录账号', validators=[DataRequired(), Length(1,20)])
     password = PasswordField(u'登录密码', validators=[DataRequired(), Length(1,20)])
-    realname = StringField(u'用户姓名', validators=[DataRequired(),Length(1,5)])
+    realname = StringField(u'用户姓名', validators=[DataRequired(),Length(1,20)])
     role = RadioField(u'角色', choices = [('3', u'普通用户')])
     submit = SubmitField(u'提 交')
