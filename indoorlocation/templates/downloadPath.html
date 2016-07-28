@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}室内定位后台系统{% endblock %}
+
+{% block page_content%}
+    <br />
+    <div class ="container" align="center">
+        <form>
+            <div class="input-group" >
+                <span class="input-group-addon" >精确查找</span>
+                <input type="text" id="input" name="input" class="form-control" placeholder="请输入要查找路径ID" style="width: 25%" >
+                <div align="left" >
+                    &nbsp;
+                    <button type="button" id="search" name="search" class="btn btn-success" onclick="validateInput()">查找</button>
+                    &nbsp;
+                    <span id="msg"></span>
+                </div>
+            </div>
+        </form>
+        <br />
+
+        <div class="panel panel-default" align="left" >
+            <div class="panel-heading" >
+                <p style="font-size: 12pt; font-family:黑体">路径列表</p>
+            </div>
+
+            <div class="panel-body">
+                <table class="table table-hover" id="table">
+                    <caption id="num"></caption>
+                    <thead>
+                    <tr>
+                        <th>路径ID</th>
+                        <th>路径上传者</th>
+                        <th>路径说明</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <ul>
+
+                    </ul>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $.post("/home/mapManage/download",function(data){
+                var paths = eval ("(" + data + ")");
+                var table = document.getElementById("table");
+                for (i=0;i<paths.number;i++)
+                    insertTab(table,paths.content[i]);
+                downloadPath();
+            })
+        });
+
+
+        function validateInput() {
+            var input = document.getElementById("input");
+            var msg = document.getElementById("msg");
+            var table = document.getElementById("table");
+            var num = document.getElementById("num");
+            if (input.value != "") {
+                msg.innerHTML = "";
+                $.post("/home/mapManage/downloadOne", {"id": input.value},function(data){
+                    var path = eval ("(" + data + ")");
+                    if(path.number == 0)
+                        msg.innerHTML = "<font color='red'>该用户不存在!</font>";
+                    else{
+                        while(table.rows.length>1)
+                            table.deleteRow(1);
+                        insertTab(table,path.content[0]);
+                        downloadPath();
+                    }
+                });
+            } else {
+                msg.innerHTML = "<font color='red'>输入不能为空!</font>";
+            }
+        }
+
+        function downloadPath(){
+            $("#table button").bind("click",function(){
+                path_id =  $(this).attr('id')
+                window.location.href="/download/path/"+path_id;
+            });
+        }
+
+        function insertTab(table,path){   //向table表中插入对象path
+            var row=table.insertRow(1);
+            var cell1=row.insertCell(0);
+            var cell2=row.insertCell(1);
+            var cell3=row.insertCell(2);
+            var cell4=row.insertCell(3);
+            cell1.innerHTML = path.id;
+            cell2.innerHTML = path.username;
+            cell3.innerHTML = path.caption;
+            cell4.innerHTML ='<button type="button" class="btn btn-info"id="'+path.id+'">下载</button>';
+            table.caption.innerHTML="共"+(table.rows.length-1)+"条路径";
+        }
+
+    </script>
+
+{% endblock %}

@@ -4,15 +4,14 @@ from flask import Blueprint, render_template, flash,redirect, url_for, request, 
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from indoorlocation.models import db, Path, User
-from user_manage import userInfo
 
 main = Blueprint('map_manage', __name__)
 
 
 # 上传路径
-@main.route('/home/mapManage/upload', methods=['GET', 'POST'])
+@main.route('/home/mapManage/myPath', methods=['GET', 'POST'])
 @login_required
-def upload():
+def myPath():
     if request.method == 'POST':
         # 检查post请求是否有文件
         if 'file' not in request.files:
@@ -34,7 +33,7 @@ def upload():
         db.session.commit()
         f.close()
         flash(u'上传成功')
-
+    # 查用户信息
     user = User.query.filter_by(username = current_user.username).first()
     data = {}
     basic_info = {"realname":user.realname, "username":user.username, "role":user.role.role,"num":user.path.count()}
@@ -45,3 +44,40 @@ def upload():
     data['basic_info'] = basic_info
     data['path'] = path
     return render_template('mapManage.html',data=data)
+
+@main.route('/home/mapManage/download', methods=['GET', 'POST'])
+@login_required
+def download():
+    path = Path.query.all()
+    data = {}
+    data['number'] = len(path)
+    content = []
+    for p in path:
+        temp = {}
+        temp['id'] = p.id
+        temp['username'] = p.user.username
+        temp['caption'] = p.caption
+        content.append(temp)
+    data['content'] = content
+    return json.dumps(data)
+
+
+@main.route('/home/mapManage/downloadOne', methods=['GET', 'POST'])
+@login_required
+def downloadOned():
+    data = {}
+    path = Path.query.filter_by(id=request.form['id']).first()
+    if path is not None:
+        data['content'] = [{"id":path.id, "username":path.user.username, "caption":path.caption}]
+        num = 1
+    else:
+        data['caontent'] = []
+        num = 0
+    data['number'] = num
+    return json.dumps(data)
+
+
+@main.route('/home/mapManage/selectPath', methods=['GET', 'POST'])
+@login_required
+def selectAllPath():
+    return render_template('downloadPath.html')
