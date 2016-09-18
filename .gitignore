@@ -2,3 +2,5 @@
 .idea/
 *.pyc
 instance/
+*.pid
+requirement.txt
