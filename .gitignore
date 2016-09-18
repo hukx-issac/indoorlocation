@@ -4,3 +4,4 @@
 instance/
 *.pid
 requirements.txt
+upload_file/
