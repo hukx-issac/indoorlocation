@@ -3,4 +3,4 @@
 *.pyc
 instance/
 *.pid
-requirement.txt
+requirements.txt
