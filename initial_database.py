@@ -1,4 +1,5 @@
-# coding:utf-8
+# -*- coding: utf-8 -*-
+
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask
@@ -8,7 +9,7 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 # MYSQL-python 做默认的驱动，先安装mysql-python 后再安装sqlalchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:hkx921023@localhost:3306/indoorlocation'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:rockwell@localhost:3306/indoorlocation'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOEN'] = True    # 自动提交数据库变动
 app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', True)
 
@@ -74,7 +75,7 @@ db.create_all()
 
 # 数据库初始化
 # 用户user身份identity
-supermanager = Role(1, u'超级管理员')
+supermanager = Role(1,u'超级管理员')
 manager = Role(2, u'管理员')
 generaluser = Role(3, u'普通用户')
 db.session.add(manager)

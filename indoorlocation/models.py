@@ -56,3 +56,5 @@ class Path(db.Model):
     path = db.Column(db.Text)
     caption = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    
