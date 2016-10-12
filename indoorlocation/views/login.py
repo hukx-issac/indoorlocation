@@ -1,13 +1,11 @@
 # coding:utf-8
-from flask import Blueprint, render_template, flash,redirect, url_for, request,session
+from flask import Blueprint, render_template, flash,redirect, url_for, request
 from flask_login import login_required, login_user, LoginManager, logout_user
 from indoorlocation.forms import LoginForm
 from indoorlocation.models import User
-from flask_login import current_user
 
 main = Blueprint('login', __name__)
 login_manager = LoginManager()
-
 
 # 用户登录接口
 @main.route('/', methods=['GET', 'POST'], endpoint='login')
@@ -39,5 +37,3 @@ def logout():
     logout_user()
     flash(u'您已经退出账户！')
     return redirect(url_for('login.home'))
-
-

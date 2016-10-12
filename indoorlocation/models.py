@@ -2,6 +2,8 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
 
 db = SQLAlchemy()
 
@@ -36,6 +38,18 @@ class User(db.Model, UserMixin):
     def reset_password(self, newpassword):
         self.password_hash = generate_password_hash(newpassword)
 
+    def generate_auth_token(self,expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id':self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
 
 # 用户身份模型
 class Role(db.Model):
