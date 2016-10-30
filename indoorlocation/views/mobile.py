@@ -1,3 +1,4 @@
+# coding:utf-8
 from flask_httpauth import HTTPBasicAuth
 from flask import Blueprint, g, jsonify
 from indoorlocation.models import User
