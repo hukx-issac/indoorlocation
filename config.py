@@ -3,7 +3,7 @@ import os
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    UPLOAD_FOLDER = os.path.abspath('.')+r'\upload_file'    # 上传文件的目录
+    UPLOAD_FOLDER = os.path.abspath('.')+r'/upload_file'    # 上传文件的目录
 
 
 class DevelopmentConfig(Config):
@@ -13,6 +13,7 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
+    SQLALCHEMY_COMMIT_ON_TEARDOEN = False
 
 
 config = {
