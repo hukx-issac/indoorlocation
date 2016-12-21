@@ -39,7 +39,7 @@ def upload():
     path = Path(path=str(data['path']),caption=data['information']['user_description'],user_id = user.id)
     db.session.add(path)
     db.session.commit()
-    return jsonify({'status':'upload sucess'})
+    return jsonify({'status':'upload sucess','path_id':path.id})
 
 
 @main.route('/mobile/download/path',methods=['GET', 'POST'])
