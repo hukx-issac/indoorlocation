@@ -1,6 +1,6 @@
 # coding:utf-8
 from flask_httpauth import HTTPBasicAuth
-from flask import Blueprint, g, jsonify, request, json
+from flask import Blueprint, g, jsonify, request
 from indoorlocation.models import db, Path, User
 
 
@@ -29,21 +29,14 @@ def get_token():
     return jsonify({'token':g.current_user.generate_auth_token(3600), 'expiration':3600})
 
 
-@main.route('/mobile/test')
-@auth.login_required
-def test():
-    return "success ！ hkx"
-
-
 @main.route('/mobile/upload/path',methods=['GET', 'POST'])
 def upload():
     try:
-        data = request.data
-        data = json.loads(data)
+        data = eval(request.form['path'])
         user = User.query.filter_by(username=data['information']['upload_username']).first()
     except KeyError as e:
         return jsonify({'error':"upload fail. We can't find the upload_username or the key 'path' "})
-    path = Path(path=data['path'], caption=data['information']['user_description'],user_id = user.id)
+    path = Path(path=str(data['path']),caption=data['information']['user_description'],user_id = user.id)
     db.session.add(path)
     db.session.commit()
     return jsonify({'status':'upload sucess'})
@@ -58,7 +51,7 @@ def download():
     if path is not None:
         data = {}
         data['information'] = {'upload_username': path.user.username,'user_description':path.caption,'path_id':path.id}
-        data['path'] = path.path
+        data['path'] = eval(path.path)
         return jsonify(data)
     else:
         return jsonify({'error':'the id of path is not existed !'})
@@ -72,9 +65,9 @@ def searchAllPath():
     content = []
     for p in path:
         temp = {}
-        temp['id'] = p.id
-        temp['username'] = p.user.username
-        temp['caption'] = p.caption
+        temp['path_id'] = p.id
+        temp['upload_username'] = p.user.username
+        temp['user_description'] = p.caption
         content.append(temp)
     data['content'] = content
     return jsonify(data)

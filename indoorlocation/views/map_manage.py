@@ -1,6 +1,6 @@
 # coding:utf-8
 import os, config
-from flask import Blueprint, render_template, flash,redirect, url_for, request, json, Response
+from flask import Blueprint, render_template, flash,redirect, url_for, request, json, Response, jsonify
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from indoorlocation.models import db, Path, User
@@ -28,7 +28,11 @@ def myPath():
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         f = open(os.path.join(UPLOAD_FOLDER, filename),'r')
         data = json.load(f)
-        path = Path(path=data['path'], caption=data['caption'],user_id = data['user_id'])
+        try:
+            user = User.query.filter_by(username=data['information']['upload_username']).first()
+            path = Path(path=str(data['path']), caption=data['information']['user_description'], user_id=user.id)
+        except KeyError as e:
+            return jsonify({'error': "upload fail. Please check the content of your file "})
         db.session.add(path)
         db.session.commit()
         f.close()
@@ -71,7 +75,7 @@ def downloadOned():
         data['content'] = [{"id":path.id, "username":path.user.username, "caption":path.caption}]
         num = 1
     else:
-        data['caontent'] = []
+        data['content'] = []
         num = 0
     data['number'] = num
     return json.dumps(data)
