@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}室内定位后台系统{% endblock %}
+{% block title %}室内路径引导后台系统{% endblock %}
 
 {% block page_content%}
     <br />
@@ -55,6 +55,7 @@
                 for (i=0;i<paths.number;i++)
                     insertTab(table,paths.content[i]);
                 downloadPath();
+                viewPath();
             })
         });
 
@@ -83,9 +84,17 @@
         }
 
         function downloadPath(){
-            $("#table button").bind("click",function(){
+            $("#table button:even").bind("click",function(){
                 path_id =  $(this).attr('id')
                 window.location.href="/download/path/"+path_id;
+            });
+        }
+
+        function viewPath(){
+            $("#table button:odd").bind("click",function(){
+                path_id =  $(this).attr('id');
+                window.open('/view/path/'+path_id.substring(4));
+
             });
         }
 
@@ -98,7 +107,8 @@
             cell1.innerHTML = path.id;
             cell2.innerHTML = path.username;
             cell3.innerHTML = path.caption;
-            cell4.innerHTML ='<button type="button" class="btn btn-info"id="'+path.id+'">下载</button>';
+            cell4.innerHTML =   '<button type="button" class="btn btn-info" id="'+path.id+'">下载</button> &nbsp&nbsp&nbsp' +
+                                '<button type="button" class="btn btn-info" id="view'+path.id+'">查看</button>';
             table.caption.innerHTML="共"+(table.rows.length-1)+"条路径";
         }
 

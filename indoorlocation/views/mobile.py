@@ -7,8 +7,9 @@ from indoorlocation.models import db, Path, User
 main = Blueprint('mobile', __name__)
 auth = HTTPBasicAuth()
 
+
 @auth.verify_password
-def verfy_password(username_or_token, password):
+def verify_password(username_or_token, password):
     if password == '':
         g.current_user = User.verify_auth_token(username_or_token)
         g.token_used = True
@@ -71,3 +72,20 @@ def searchAllPath():
         content.append(temp)
     data['content'] = content
     return jsonify(data)
+
+
+@main.route('/mobile/searchUserPath',methods=['GET', 'POST'])
+def searchUserPath():
+    try:
+        data = request.form['username']
+        user = User.query.filter_by(username=data).first()
+    except KeyError as e:
+        return jsonify({'error':"The username is erorr."})
+    paths = user.path
+    path_id =[]
+    num = 0
+    for path in paths:
+        num += 1
+        path_id.append(path.id)
+    result = {'path_id':path_id,'username':data,'number':num}
+    return jsonify(result)

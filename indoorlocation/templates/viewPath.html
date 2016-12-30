@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>路径显示</title>
+</head>
+
+<body>
+    <div align="center">
+        <canvas id="cas" width="1500" height="500"  style="border:1px solid #d3d3d3;" >
+        </canvas>
+    </div>
+    <div align="center">
+        <button id="up" type="button" class="btn btn-default">上移</button>
+        <button id="down" type="button" class="btn btn-default">下移</button>
+        <button id="left" type="button" class="btn btn-default">左移</button>
+        <button id="right" type="button" class="btn btn-default">右移</button>
+        <button id="large" type="button" class="btn btn-default">放大</button>
+        <button id="small" type="button" class="btn btn-default">缩小</button>
+    </div>
+</body>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+        $(function(){
+            var pathname = window.location.pathname;
+            var path_id = pathname.split('/')[3];
+            var x = 750;
+            var y = 50;
+            var baseLength = 5;
+            var canvas = document.getElementById('cas');
+            var ctx = canvas.getContext('2d');
+            var flag = false;
+
+            $.post("/getpath/"+path_id,function(data){
+                var data = eval ("(" + data + ")");
+                function drawPath(x,y){
+                    ctx.clearRect(0, 0, 1500, 500);
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x,y);
+                    var path = normalize(data);
+                    for(var i=0;i<path.length;i++){
+                        var dx = path[i].length * (path[i].sinx) * baseLength;
+                        var dy = path[i].length * (path[i].cosx) * baseLength;
+                        ctx.lineTo(x+dx, y-dy);
+                        x = x+dx;
+                        y = y-dy;
+                        ctx.stroke();
+                    }
+                    ctx.closePath();
+                }
+                drawPath(x,y);
+
+                $("#up").click(function (e){
+                    y-=50;
+                    drawPath(x, y);
+                });
+                $("#down").click(function (e){
+                    y+=50;
+                    drawPath(x, y);
+                });
+                $("#left").click(function (e){
+                    x-=50;
+                    drawPath(x, y);
+                });
+                $("#right").click(function (e){
+                    x+=50;
+                    drawPath(x, y);
+                });
+                $("#large").click(function (e){
+                    baseLength*=1.5;
+                    drawPath(x, y);
+                });
+                $("#small").click(function (e){
+                    baseLength*=0.8;
+                    drawPath(x, y);
+                });
+
+                if (flag==false) {
+                    $("#cas").mousedown(function (e) {
+                        flag = true;
+                        var pointX1 = e.pageX;
+                        var pointY1 = e.pageY;
+                        $("#cas").mouseup(function (e) {
+                            flag = false;
+                            var pointX2 = e.pageX;
+                            var pointY2 = e.pageY;
+                            x += pointX2 - pointX1;
+                            y += pointY2 - pointY1;
+                            b = xy(x, y);
+                            x = b[0];
+                            y = b[1];
+                            drawPath(x, y);
+                        });
+                    });
+                }
+            });
+        });
+
+
+    function xy(x,y){
+        var b = new Array();
+        if(x>1450)x=1450;
+        if(x<50)x=50;
+        if(y>480)y=480;
+        if(y<20)y=20;
+        b[0] = x;
+        b[1] = y;
+        return b
+    }
+
+     function normalize(path){
+        var newPath = new Array();
+        var len = path.length;
+
+        if(len < 1)
+            return path;
+
+        newPath[0] = path[0];
+        for(var i = 1; i < len; i++) {
+            var o1 = path[i];
+            var o2 = newPath[(newPath.length - 1)];
+
+            var a1 = getRotationAngle(o1.sinx, o1.cosx);
+            var a2 = getRotationAngle(o2.sinx, o2.cosx);
+
+            if (Math.abs(a1 - a2) < (Math.PI / 6)) {
+                y = o2.sinx * o2.length + o1.sinx * o1.length;
+                x = o2.cosx * o2.length + o1.cosx * o1.length;
+                var length = Math.sqrt(x * x + y * y);
+
+                var newStep = {
+                    "sinx": (y / length),
+                    "cosx": (x / length),
+                    "length": length
+                };
+
+                newPath.pop();
+                newPath.push(newStep);
+            } else {
+                newPath.push(o1);
+            }
+        }
+        return newPath
+    }
+
+    function getRotationAngle(sinx,cosx){
+        if(sinx >= 0 && cosx >= 0){
+            if(sinx <= 0.5)
+                return Math.asin(sinx);
+            else
+                return Math.acos(cosx);
+        }
+        else if(sinx >=0 && cosx < 0){
+            if(sinx <= 0.5)
+                return (Math.PI - Math.asin(sinx));
+            else
+                return (Math.PI - Math.acos(-cosx));
+        }
+        else if(sinx < 0 && cosx < 0){
+            if((-sinx) <= 0.5)
+                return (Math.PI + Math.asin(-sinx));
+            else
+                return (Math.PI + Math.acos(-cosx));
+        }
+        else{
+            if((-sinx) <= 0.5)
+                return (Math.PI*2 - Math.asin(-sinx));
+            else
+                return (Math.PI*2 - Math.acos(cosx));
+        }
+    }
+
+
+</script>
+</html>

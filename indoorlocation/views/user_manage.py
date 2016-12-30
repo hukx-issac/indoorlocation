@@ -131,7 +131,10 @@ def search():
 @login_required
 def remove_user():
     user = User.query.filter_by(username=request.form['username']).first()
+    paths = user.path
     if user is not None:
+        for path in paths:
+            db.session.delete(path)
         db.session.delete(user)
         db.session.commit()
         data = {"status": "success"}
@@ -172,3 +175,19 @@ def download_path(path_id):
     return Response(content,
             mimetype='application/json',
             headers={'Content-Disposition':'attachment;filename='+filename})
+
+'''
+查看路径数据
+'''
+@main.route('/view/path/<int:path_id>', methods=['POST','GET'])
+@login_required
+def view_path(path_id):
+    return render_template('viewPath.html')
+
+
+@main.route('/getpath/<int:path_id>',  methods=['POST','GET'])
+@login_required
+def get_path(path_id):
+    path = Path.query.filter_by(id=path_id).first()
+    data = eval(path.path)
+    return json.dumps(data)
