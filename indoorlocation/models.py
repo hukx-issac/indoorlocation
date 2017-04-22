@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 db = SQLAlchemy()
 
@@ -67,8 +68,12 @@ class Role(db.Model):
 class Path(db.Model):
     __tablename__ = 'paths'
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    path = db.Column(db.Text)
+    path = db.Column(LONGTEXT)
     caption = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    latitude = db.Column(db.String(20))
+    longitude = db.Column(db.String(20))
+    picture = db.Column(LONGTEXT)
+    address = db.Column(db.Text)
 
     

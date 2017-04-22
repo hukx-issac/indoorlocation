@@ -113,7 +113,6 @@ def searchAllManager():
 def search():
     data = {}
     user = User.query.filter_by(username=request.form['input']).first()
-    print request.data
     if user is not None:
         data["users"] = [{"realname":user.realname,"username":user.username}]
         num = 1
@@ -132,10 +131,7 @@ def search():
 @login_required
 def remove_user():
     user = User.query.filter_by(username=request.form['username']).first()
-    paths = user.path
     if user is not None:
-        for path in paths:
-            db.session.delete(path)
         db.session.delete(user)
         db.session.commit()
         data = {"status": "success"}
@@ -176,6 +172,7 @@ def download_path(path_id):
     return Response(content,
             mimetype='application/json',
             headers={'Content-Disposition':'attachment;filename='+filename})
+
 
 '''
 查看路径数据

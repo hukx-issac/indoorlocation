@@ -4,12 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask
 from flask_login import UserMixin
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
 # MYSQL-python 做默认的驱动，先安装mysql-python 后再安装sqlalchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:rockwell@localhost:3306/indoorlocation'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:hkx921023@localhost:3306/indoorlocation'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOEN'] = True    # 自动提交数据库变动
 app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', True)
 
@@ -62,9 +63,13 @@ class Role(db.Model):
 class Path(db.Model):
     __tablename__ = 'paths'
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    path = db.Column(db.Text)
+    path = db.Column(LONGTEXT)
     caption = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    latitude = db.Column(db.String(20))
+    longitude = db.Column(db.String(20))
+    picture = db.Column(LONGTEXT)
+    address = db.Column(db.Text)
 
 # models 模型 end
 

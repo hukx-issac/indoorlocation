@@ -30,7 +30,9 @@ def myPath():
         data = json.load(f)
         try:
             user = User.query.filter_by(username=data['information']['upload_username']).first()
-            path = Path(path=str(data['path']), caption=data['information']['user_description'], user_id=user.id)
+            path = Path(path=str(data['path']), caption=data['information']['user_description'], user_id=user.id,
+                        latitude=data['information']['latitude'],longitude=data['information']['longitude'],
+                        address=data['information']['address'],picture=data['information']['picture'])
         except KeyError as e:
             return jsonify({'error': "upload fail. Please check the content of your file "})
         db.session.add(path)
@@ -61,6 +63,10 @@ def download():
         temp['id'] = p.id
         temp['username'] = p.user.username
         temp['caption'] = p.caption
+        temp['latitude'] = p.latitude
+        temp['longitude'] = p.longitude
+        temp['picture'] = p.picture
+        temp['address'] = p.address
         content.append(temp)
     data['content'] = content
     return json.dumps(data)
