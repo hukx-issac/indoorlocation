@@ -85,7 +85,5 @@ db.session.commit()
 
 # 初始化第一个超级管理员
 firstperson= User('qwe', '123',1,'supermanager')
-secondperson= User('asd', '123',2,'manager')
 db.session.add(firstperson)
-db.session.add(secondperson)
 db.session.commit()
