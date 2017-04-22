@@ -113,6 +113,7 @@ def searchAllManager():
 def search():
     data = {}
     user = User.query.filter_by(username=request.form['input']).first()
+    print request.data
     if user is not None:
         data["users"] = [{"realname":user.realname,"username":user.username}]
         num = 1
