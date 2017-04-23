@@ -37,7 +37,9 @@ def upload():
         user = User.query.filter_by(username=data['information']['upload_username']).first()
     except KeyError as e:
         return jsonify({'error':"upload fail. We can't find the upload_username or the key 'path' "})
-    path = Path(path=str(data['path']),caption=data['information']['user_description'],user_id = user.id)
+    path = Path(path=str(data['path']),caption=data['information']['user_description'],user_id = user.id,
+                latitude=data['information']['latitude'],longitude=data['information']['longitude'],
+                address=data['information']['address'],picture=data['information']['picture'])
     db.session.add(path)
     db.session.commit()
     return jsonify({'status':'upload sucess','path_id':path.id})
@@ -51,7 +53,8 @@ def download():
         return jsonify({'error':"download fail. we can't find the key 'id'"})
     if path is not None:
         data = {}
-        data['information'] = {'upload_username': path.user.username,'user_description':path.caption,'path_id':path.id}
+        data['information'] = {'upload_username': path.user.username,'user_description':path.caption,'path_id':path.id,
+                               'latitude':path.latitude,'longitude':path.longitude,'address':path.address,'picture':path.picture}
         data['path'] = eval(path.path)
         return jsonify(data)
     else:
@@ -69,6 +72,10 @@ def searchAllPath():
         temp['path_id'] = p.id
         temp['upload_username'] = p.user.username
         temp['user_description'] = p.caption
+        temp['latitude'] = p.latitude
+        temp['longitude'] = p.longitude
+        temp['picture'] = p.picture
+        temp['address'] = p.address
         content.append(temp)
     data['content'] = content
     return jsonify(data)

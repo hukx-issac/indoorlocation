@@ -10,7 +10,7 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 # MYSQL-python 做默认的驱动，先安装mysql-python 后再安装sqlalchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:hkx921023@localhost:3306/indoorlocation'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:rockwell@localhost:3306/indoorlocation'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOEN'] = True    # 自动提交数据库变动
 app.config.setdefault('SQLALCHEMY_TRACK_MODIFICATIONS', True)
 

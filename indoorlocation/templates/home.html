@@ -140,7 +140,7 @@
                     position: [parseFloat(paths.content[i].longitude), parseFloat(paths.content[i].latitude)]
                 });
                 //实例化信息窗体
-                var title = paths.content[i].caption, content = [];
+                var title = "路径id: "+paths.content[i].id, content = [];
                 var picture = paths.content[i].picture;
                 var address = paths.content[i].address;
                 if (picture == 'null') {
@@ -150,7 +150,8 @@
                 if (address == "null") {
                     address = "目前暂无地址信息"
                 }
-                content.push("<img src='" + picture + "' height='90px' width='120px'>地址：" + address);
+                content.push("<img src='" + picture + "' height='90px' width='120px'>上传者说明：" + paths.content[i].caption);
+                content.push("地址：" + address)
                 content.push("<a href='/view/path/" + paths.content[i].id + "'>详细信息</a>");
 
                 marker.content = createInfoWindow(title, content.join("<br/>"));

@@ -165,7 +165,8 @@ def remove_path():
 def download_path(path_id):
     path = Path.query.filter_by(id=path_id).first()
     data = {}
-    data['information'] = {'upload_username': path.user.username, 'user_description': path.caption, 'path_id': path.id}
+    data['information'] = {'upload_username': path.user.username, 'user_description': path.caption, 'path_id': path.id,
+                           'latitude': path.latitude, 'longitude': path.longitude, 'address': path.address,'picture': path.picture}
     data['path'] = eval(path.path)
     content = json.dumps(data)
     filename = 'path_'+str(path_id)+'.json'
