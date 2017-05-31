@@ -31,6 +31,7 @@ def get_token():
 
 
 @main.route('/mobile/upload/path',methods=['GET', 'POST'])
+#@auth.login_required
 def upload():
     try:
         data = eval(request.form['path'])
@@ -46,6 +47,7 @@ def upload():
 
 
 @main.route('/mobile/download/path',methods=['GET', 'POST'])
+#@auth.login_required
 def download():
     try:
         path = Path.query.filter_by(id=int(request.form['id'])).first()
@@ -62,6 +64,7 @@ def download():
 
 
 @main.route('/mobile/searchAllPath',methods=['GET', 'POST'])
+#@auth.login_required
 def searchAllPath():
     path = Path.query.all()
     data = {}
@@ -82,6 +85,7 @@ def searchAllPath():
 
 
 @main.route('/mobile/searchUserPath',methods=['GET', 'POST'])
+#@auth.login_required
 def searchUserPath():
     try:
         data = request.form['username']

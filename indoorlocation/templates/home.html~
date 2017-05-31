@@ -119,7 +119,7 @@
                 content.push('<div class="info-title">'+title+'</div><div class="info-content">');
                 //content.push('<img src="https://webapi.amap.com/images/amap.jpg">');
                 content.push("<img src='" + picture + "' height='inherit' width='120px'>");
-                content.push('描述：'+ loaderCaption+"<br/>");
+                content.push('上传者描述：'+ loaderCaption+"<br/>");
                 content.push('地址：'+ address+"<br/>");
                 content.push("<a href='/view/path/" + paths.content[i].id + "'>详细信息</a>");
 
